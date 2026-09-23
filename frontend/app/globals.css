@@ -1,0 +1,317 @@
+@import "tailwindcss";
+
+:root {
+  --background: #050816;
+  --foreground: #e8eefc;
+  --muted: #94a3b8;
+  --primary: #22d3ee;
+  --primary-dark: #0891b2;
+  --secondary: #6366f1;
+  --card: rgba(15, 23, 42, 0.72);
+  --border: rgba(148, 163, 184, 0.16);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* --------------------------------
+   Global Background
+-------------------------------- */
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -2;
+  background:
+    radial-gradient(
+      circle at 15% 20%,
+      rgba(34, 211, 238, 0.09),
+      transparent 30%
+    ),
+    radial-gradient(
+      circle at 85% 30%,
+      rgba(99, 102, 241, 0.10),
+      transparent 30%
+    ),
+    radial-gradient(
+      circle at 50% 90%,
+      rgba(14, 165, 233, 0.06),
+      transparent 35%
+    );
+}
+
+/* --------------------------------
+   Selection
+-------------------------------- */
+
+::selection {
+  background: rgba(34, 211, 238, 0.25);
+  color: white;
+}
+
+/* --------------------------------
+   Scrollbar
+-------------------------------- */
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #050816;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1e3a5f;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #0891b2;
+}
+
+/* --------------------------------
+   Links
+-------------------------------- */
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* --------------------------------
+   Buttons
+-------------------------------- */
+
+button {
+  font-family: inherit;
+}
+
+/* --------------------------------
+   Container
+-------------------------------- */
+
+.container {
+  width: min(1200px, calc(100% - 40px));
+  margin: 0 auto;
+}
+
+/* --------------------------------
+   Glass Card
+-------------------------------- */
+
+.glass-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border-radius: 20px;
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.03);
+}
+
+/* --------------------------------
+   Gradient Text
+-------------------------------- */
+
+.gradient-text {
+  background: linear-gradient(
+    90deg,
+    #67e8f9,
+    #22d3ee,
+    #818cf8
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* --------------------------------
+   Glow
+-------------------------------- */
+
+.glow {
+  box-shadow:
+    0 0 30px rgba(34, 211, 238, 0.15),
+    0 0 80px rgba(99, 102, 241, 0.08);
+}
+
+/* --------------------------------
+   Section
+-------------------------------- */
+
+.section {
+  padding: 100px 0;
+}
+
+.section-title {
+  font-size: clamp(2rem, 4vw, 3.5rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+}
+
+.section-subtitle {
+  max-width: 700px;
+  margin-top: 18px;
+  color: var(--muted);
+  font-size: 1.05rem;
+  line-height: 1.8;
+}
+
+/* --------------------------------
+   Grid Background
+-------------------------------- */
+
+.grid-background {
+  background-image:
+    linear-gradient(
+      rgba(148, 163, 184, 0.045) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg,
+      rgba(148, 163, 184, 0.045) 1px,
+      transparent 1px
+    );
+  background-size: 50px 50px;
+}
+
+/* --------------------------------
+   Page Animation
+-------------------------------- */
+
+.fade-in {
+  animation: fadeIn 0.8s ease forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* --------------------------------
+   Floating Animation
+-------------------------------- */
+
+.float {
+  animation: float 5s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-12px);
+  }
+}
+
+/* --------------------------------
+   Pulse
+-------------------------------- */
+
+.pulse-glow {
+  animation: pulseGlow 3s ease-in-out infinite;
+}
+
+@keyframes pulseGlow {
+  0%,
+  100% {
+    box-shadow: 0 0 20px rgba(34, 211, 238, 0.08);
+  }
+
+  50% {
+    box-shadow: 0 0 45px rgba(34, 211, 238, 0.20);
+  }
+}
+
+/* --------------------------------
+   Responsive
+-------------------------------- */
+
+@media (max-width: 768px) {
+  .container {
+    width: min(100% - 28px, 1200px);
+  }
+
+  .section {
+    padding: 70px 0;
+  }
+}
+/* ===== MOLESOL AI SPACING FIX ===== */
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  line-height: 1.7;
+}
+
+/* Give every section breathing room */
+section {
+  padding-top: 80px;
+  padding-bottom: 80px;
+}
+
+/* Headings */
+h1 {
+  line-height: 1.08;
+  margin-bottom: 24px;
+}
+
+h2 {
+  line-height: 1.15;
+  margin-bottom: 24px;
+}
+
+h3 {
+  line-height: 1.25;
+  margin-bottom: 14px;
+}
+
+/* Paragraphs */
+p {
+  line-height: 1.8;
+  margin-bottom: 18px;
+}
+
+/* Prevent text from becoming too wide */
+section p {
+  max-width: 850px;
+}
+
+/* Cards */
+section div {
+  box-sizing: border-box;
+}
