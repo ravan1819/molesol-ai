@@ -31,3 +31,5 @@ Thumbs.db
 
 # Secrets
 secrets/
+
+ml/models/best_model.pkl
