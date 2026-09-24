@@ -30,6 +30,4 @@ Thumbs.db
 *.log
 
 # Secrets
-secrets/
-
-ml/models/best_model.pkl
+secrets
