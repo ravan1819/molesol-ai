@@ -1,2 +1,12 @@
 fastapi
 uvicorn
+joblib
+xgboost
+scikit-learn
+pandas
+numpy
+rdkit
+sqlalchemy
+pymysql
+python-dotenv
+requests
