@@ -46,7 +46,7 @@ export default function ModelInsightsPage() {
               </p>
 
               <h2 className="mt-3 text-3xl font-bold text-cyan-400">
-                XGBoost
+                Random Forest
               </h2>
             </div>
 
