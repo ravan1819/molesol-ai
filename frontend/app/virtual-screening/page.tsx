@@ -32,156 +32,94 @@ export default function VirtualScreeningPage() {
     setLoading(true);
     setResults([]);
 
-    const screeningResults: ScreeningResult[] = [];
+    const API_URL =
+      process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
 
-    for (let i = 0; i < smilesList.length; i++) {
-      const smiles = smilesList[i].trim();
+    try {
+      const response = await fetch(`${API_URL}/predict-batch`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          smiles: smilesList,
+        }),
+      });
 
-      if (!smiles) {
-        continue;
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          data.detail || "Batch prediction failed."
+        );
       }
 
-      try {
-        const response = await fetch(
-          "http://127.0.0.1:8000/predict",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
+      const screeningResults: ScreeningResult[] =
+        data.results.map(
+          (
+            result: {
+              id: number;
+              name: string;
+              smiles: string;
+              predicted_solubility: number | null;
+              category: string;
+              error?: string | null;
             },
-            body: JSON.stringify({
-              smiles: smiles,
-            }),
-          }
+            index: number
+          ) => ({
+            id: index + 1,
+            name: result.name || "Unknown",
+            smiles: result.smiles,
+            prediction:
+              result.predicted_solubility !== null
+                ? Number(result.predicted_solubility)
+                : null,
+            category: result.category || "Unknown",
+            error: result.error || undefined,
+          })
         );
 
-        const data = await response.json();
+      setResults(screeningResults);
+    } catch (error) {
+      console.error("Virtual screening error:", error);
 
-        if (!response.ok) {
-          screeningResults.push({
-            id: i + 1,
-            name: "Unknown",
-            smiles: smiles,
-            prediction: null,
-            category: "Invalid",
-            error: data.detail || "Prediction failed.",
-          });
-        } else {
-          const prediction = Number(
-            data.predicted_solubility
-          );
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "Backend connection failed.";
 
-          screeningResults.push({
-            id: i + 1,
-            name: data.name || "Unknown",
-            smiles: smiles,
-            prediction: prediction,
-            category: getSolubilityCategory(prediction),
-          });
-        }
-      } catch (error) {
-        console.error(error);
-
-        screeningResults.push({
-          id: i + 1,
+      setResults(
+        smilesList.map((smiles, index) => ({
+          id: index + 1,
           name: "Unknown",
-          smiles: smiles,
+          smiles,
           prediction: null,
           category: "Error",
-          error: "Backend connection failed.",
-        });
-      }
-
-      // Update table after every molecule
-      setResults([...screeningResults]);
+          error: errorMessage,
+        }))
+      );
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
   };
 
   // ==========================================
   // MANUAL SMILES SCREENING
   // ==========================================
 
-  const runScreening = async (smilesList: string[]) => {
-  if (smilesList.length === 0) {
-    alert("No valid SMILES strings found.");
-    return;
-  }
+  const handleScreen = async () => {
+    const smilesList = moleculesInput
+      .split("\n")
+      .map((line) => line.trim())
+      .filter((line) => line.length > 0);
 
-  setLoading(true);
-  setResults([]);
-
-  const API_URL =
-    process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
-
-  try {
-    const response = await fetch(`${API_URL}/predict-batch`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        smiles: smilesList,
-      }),
-    });
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      throw new Error(
-        data.detail || "Batch prediction failed."
-      );
+    if (smilesList.length === 0) {
+      alert("Please enter at least one SMILES string.");
+      return;
     }
 
-    const screeningResults: ScreeningResult[] =
-      data.results.map(
-        (
-          result: {
-            id: number;
-            name: string;
-            smiles: string;
-            predicted_solubility: number | null;
-            category: string;
-            error?: string | null;
-          },
-          index: number
-        ) => ({
-          id: index + 1,
-          name: result.name || "Unknown",
-          smiles: result.smiles,
-          prediction:
-            result.predicted_solubility !== null
-              ? Number(result.predicted_solubility)
-              : null,
-          category: result.category || "Unknown",
-          error: result.error || undefined,
-        })
-      );
-
-    setResults(screeningResults);
-  } catch (error) {
-    console.error("Virtual screening error:", error);
-
-    const errorMessage =
-      error instanceof Error
-        ? error.message
-        : "Backend connection failed.";
-
-    setResults(
-      smilesList.map((smiles, index) => ({
-        id: index + 1,
-        name: "Unknown",
-        smiles,
-        prediction: null,
-        category: "Error",
-        error: errorMessage,
-      }))
-    );
-  } finally {
-    setLoading(false);
-  }
-};
+    await runScreening(smilesList);
+  };
 
   // ==========================================
   // LOAD EXAMPLES
@@ -851,7 +789,6 @@ CCO`}
   );
 }
 
-
 // ==========================================
 // SOLUBILITY CATEGORY
 // ==========================================
@@ -871,7 +808,6 @@ function getSolubilityCategory(logS: number) {
 
   return "Low Solubility";
 }
-
 
 // ==========================================
 // ESCAPE CSV VALUES
